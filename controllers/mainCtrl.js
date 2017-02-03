@@ -1,32 +1,34 @@
 var user = require('../user.js');
+var skillz = require('../skillz.js');
+var secrets = require('../secrets.js');
 
 module.exports = {
    "getName": function(req, res, next){
-      res.status(200).json({"name": user.name});
+      res.status(200).json(user.name);
    },
    "getLocation": function(req, res, next){
-      res.status(200).json({"location": user.location});
+      res.status(200).json(user.location);
    },
    "getOccupations": function(req, res, next){
       var ord = req.query.order;
       if(ord){
          if(ord == 'asc'){
-            res.status(200).json({"occupations": user.occupations.reverse()});
+            res.status(200).json(user.occupations.reverse());
          }
          if(ord == 'desc'){
-            res.status(200).json({"occupations": user.occupations.sort()});
+            res.status(200).json(user.occupations.sort());
          }
       } else {
-         res.status(200).json({"occupations": user.occupations});
+         res.status(200).json(user.occupations);
       }
    },
    "getOccupationsLatest": function(req, res, next){
       var arr = user.occupations;
       var slc = arr.slice(-1);
-      res.status(200).json({"latestOccupation": slc});
+      res.status(200).json(slc);
    },
    "getHobbies": function(req, res, next){
-      res.status(200).json({"hobbies": user.hobbies});
+      res.status(200).json(user.hobbies);
    },
    "getHobbiesByType": function(req, res, next){
       var t = req.params.type;
@@ -121,5 +123,32 @@ module.exports = {
       }
       user.restaurants.push(newRest);
       res.status(200).json({"restaurants": user.restaurants});
+   },
+   getSkillz: function(req, res, next){
+      if(req.query.experience){
+         var skill = req.query.experience;
+         var filteredSkillz = [];
+         for(var i=0; i<skillz.length; i++){
+            if(skillz[i].experience == skill){
+                  filteredSkillz.push(skillz[i]);
+            }
+         }
+         res.status(200).json(filteredSkillz);
+      } else {
+         res.status(200).json(skillz);
+      }
+   },
+   postSkillz: function(req, res, next){
+         var newSkill = {
+               "id": req.body.id,
+               "name": req.body.name,
+               "experience": req.body.experience
+         } 
+         skillz.push(newSkill);
+         res.status(200).json(skillz);
+   },
+   getSecrets: function(req, res, next){
+         res.status(200).json({"secrets": secrets})
    }
+      
 }
